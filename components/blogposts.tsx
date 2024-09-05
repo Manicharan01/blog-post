@@ -27,18 +27,6 @@ export default function BlogsView() {
         setBlogPosts(json)
     }
 
-    async function handleDelete(props: any) {
-        await fetch(`api/blog/delete`, {
-            method: "DELETE",
-            headers: {
-                "content-type": "application/json"
-            },
-            body: JSON.stringify({
-                title: props.title
-            })
-        })
-    }
-
     useEffect(() => {
         getBlogPosts()
     }, [])
@@ -88,7 +76,18 @@ export default function BlogsView() {
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel className="bg-zinc-700 text-zinc-50 hover:bg-zinc-600">Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => handleDelete(post.title)} className="bg-red-600 text-zinc-50 hover:bg-red-700">
+                                                        <AlertDialogAction onClick={async () => {
+                                                            await fetch(`api/blog/delete`, {
+                                                                method: "DELETE",
+                                                                headers: {
+                                                                    "content-type": "application/json"
+                                                                },
+                                                                body: JSON.stringify({
+                                                                    title: post.title
+                                                                })
+                                                            })
+                                                            getBlogPosts()
+                                                        }} className="bg-red-600 text-zinc-50 hover:bg-red-700">
                                                             Delete
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>

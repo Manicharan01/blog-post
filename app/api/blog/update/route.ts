@@ -11,7 +11,8 @@ const titleSchema = z.object({
 
 export async function PUT(req: NextRequest) {
     const session = await getServerSession()
-    const parsedInput = await titleSchema.parseAsync(req.json())
+    const { title, updatedTitle, content } = await req.json()
+    const parsedInput = await titleSchema.parseAsync({ title, updatedTitle, content })
 
     const existingUser = await prismaClient.user.findUnique({
         where: {
@@ -33,14 +34,12 @@ export async function PUT(req: NextRequest) {
             data: {
                 title: parsedInput.updatedTitle,
                 content: parsedInput.content,
-                updatedAt: String(Date.now())
-
             }
         })
 
         return NextResponse.json({ message: "Updated Successfully" })
     } catch (e) {
         console.log(e)
-        return NextResponse.json({ message: "Invalid Request" })
+        return NextResponse.json({ message: "Invalid Request" }, { status: 400 })
     }
 }

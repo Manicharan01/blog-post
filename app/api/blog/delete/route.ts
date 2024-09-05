@@ -8,7 +8,9 @@ const titleSchema = z.object({
 })
 
 export async function DELETE(req: NextRequest) {
-    const parsedInput = await titleSchema.parseAsync(req.json())
+    const { title } = await req.json()
+    console.log(title)
+    const parsedInput = await titleSchema.parseAsync({ title })
     const session = await getServerSession()
 
     const user = await prismaClient.user.findUnique({
